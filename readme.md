@@ -75,13 +75,13 @@ transforming korma.postgis into korma.spatial that handles the different spatial
 is currently no short term goal.  
 generated queries need to be a bit different depending on the database.   Esri's ST_GEOMETRY in oracle for example returns 0|1 instead of a boolean,
 so we would have to generate
-  ```sql
+```sql
     [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1
-  ```
+```
     instead of
-   ```sql
+```sql
     [...] WHERE ST_INTERSECTS(table1.shape, table2.shape)
-   ```
+```
 
 this might happen, after the api is finalized
 
