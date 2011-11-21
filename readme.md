@@ -5,7 +5,8 @@ and "aliases" for the postgis functions, so you can type less and your editor mi
 provide auto-complete.  
 
 # Warning #
-korma.postgis is in no way production ready and has currently only been run with postgres 9.1/postgis 1.5.  
+korma.postgis is in no way production ready
+and has currently only been run with postgres 9.0/postgis 1.5.
 other versions might work, but they also might blow up in your face and even if you use postgis 1.5: you might want to keep your distance.  
 not everything has been tested and most of the code was generated.  
 
@@ -19,7 +20,7 @@ not everything has been tested and most of the code was generated.
 
     (defentity geom-ent
         (prepare   prepare-postgis) ;this allows you to use jts-geometries in your insert/update statements
-        (transform tranform-posgis) ;this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
+        (transform tranform-postgis) ;this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
     )
 
     (def point (new Point 7.7 8.8)) ;define some JTS point
@@ -63,7 +64,9 @@ not everything has been tested and most of the code was generated.
 
 # Extension points #
 there is currently one multimethod that can be used to customize korma.postgis to your needs:
-(defmulti to-wkt class)  
+```clojure
+(defmulti to-wkt class)
+```
 converts the input-parameter into WKT to interface with the database (this WILL change to to-wkb)
 usefull if you don't use JTS as your geometry library (although you should)
 
@@ -71,10 +74,14 @@ usefull if you don't use JTS as your geometry library (although you should)
 transforming korma.postgis into korma.spatial that handles the different spatial sql databases (ms sql server, oracle spatial/locator, arcsde/st_geometry).  
 is currently no short term goal.  
 generated queries need to be a bit different depending on the database.   Esri's ST_GEOMETRY in oracle for example returns 0|1 instead of a boolean,
-so we would have to generate  
-    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1  
-    instead of  
-    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape)  
+so we would have to generate
+  ```sql
+    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1
+  ```
+    instead of
+   ```sql
+    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape)
+   ```
 
 this might happen, after the api is finalized
 
