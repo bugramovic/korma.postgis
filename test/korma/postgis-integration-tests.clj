@@ -22,18 +22,17 @@
 (def pool (get-connection osm))
 
 (defn create-table [table type]
-  (jdbc/with-connection pool
-     (jdbc/do-commands (str "create table " table "(id serial, name varchar(200) )")
+  (.executeUpdate (.createStatement (.getConnection (:datasource pool)) )
+     (str "create table " table "(id serial, name varchar(200) )")
   )
   (.executeQuery (.createStatement (.getConnection (:datasource pool)) )
     (str "select AddGeometryColumn('" table "', 'geom', 4326, '" type "', 2)" ))
-))
+)
 
 (defn drop-table [table]
-  (jdbc/with-connection pool
-     (jdbc/do-commands (str "drop table " table)
-  )
-))
+  (.executeUpdate (.createStatement (.getConnection (:datasource pool)) )
+     (str "drop table " table)
+  ))
 
 (defentity korma_postgis_point
   (fields :id :name :geom)
@@ -73,6 +72,7 @@
     (create-test-tables)
     (fill-test-tables)
     (f)
+    (catch Exception e (println e))
     (finally
       (drop-test-tables) )))
 
@@ -89,9 +89,9 @@
 )
 
 (deftest join-inside
-  (is (=1 (count (select korma_postgis_point
-                   (spatial :korma_postgis_poly)
-                   (where (st-within (:geom, :korma_postgis_poly.geom)) )) )) )
+  (is (= 1 (count (select korma_postgis_point
+                   (spatial-join :korma_postgis_poly)
+                   (where (st-within :geom :korma_postgis_poly.geom) )) )) )
   )
 
 (use-fixtures :once test-fixture)
