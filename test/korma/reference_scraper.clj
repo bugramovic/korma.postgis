@@ -1,4 +1,4 @@
-(ns korma_postgis.test.reference-scraper
+(ns korma.reference-scraper
   (:use [clojure.string :only (join)])
   (:require [net.cgrand.enlive-html :as html]))
 
