@@ -102,7 +102,7 @@
     )
   )
 
-(defmacro spatial [query table]
+(defmacro spatial-join [query table]
   "macro to prepare a 'spatial join' -> this only causes the given table-name (a keyword)
    to be included in the FROM clause, so the table can be used in the WHERE"
   `(join ~query :table ~table :ignore :ignore))
