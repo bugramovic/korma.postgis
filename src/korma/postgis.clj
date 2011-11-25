@@ -102,16 +102,9 @@
     )
   )
 
-(defmacro spatial-join [query table]
-  "macro to prepare a 'spatial join' -> this only causes the given table-name (a keyword)
-   to be included in the FROM clause, so the table can be used in the WHERE"
-  `(join ~query :table ~table :ignore :ignore))
-
-
-
 ; ***********
 ; auto generated macros for the postgis functions
-; half automaticly created by test/korma/reference-scraper.clj
+; half automaticly created by test/korma/reference_scraper.clj
 ; ***********
 
 ; *******************
