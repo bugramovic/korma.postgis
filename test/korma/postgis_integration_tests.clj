@@ -97,9 +97,3 @@
 (use-fixtures :once test-fixture)
 
 (run-tests)
-
-(sql-only
-  (select korma_postgis_point
-     (from :korma_postgis_poly)
-     (where (st-within :geom :korma_postgis_poly.geom) ))
-)
