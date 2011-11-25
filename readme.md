@@ -13,6 +13,7 @@ not everything has been tested and most of the code was generated.
 # Example/excuse for an tutorial #
 ```clojure
     ;....
+    (use 'korma.core)
     (use 'korma.postgis)
     ;... define postgres-db ... please note, that the postgres jdbc driver is not a korma.postgis dependency
     ;                           the postgis extension however is included
@@ -46,10 +47,11 @@ not everything has been tested and most of the code was generated.
 
     ;for a 'spatial join' you have to add the extra table using (from :table)
     (sql-only
-         (select korma_postgis_point
+(select korma_postgis_point
                    (from :korma_postgis_poly)
-                   (where (st-within :geom :korma_postgis_poly.geom) ))
-    )
+                   (where (and (st-within :geom :korma_postgis_poly.geom)
+                               (> :id 0))))
+)
     ;generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
 
 ```

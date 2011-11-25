@@ -75,7 +75,11 @@
           :else results ) ))
 
 (defn prepare-geom-vec [v]
-  (if (and ( vector? v) (instance? com.vividsolutions.jts.geom.Geometry (first v))) (conv-param v) v ))
+  (if (and (vector? v)
+           (= 2 (count v))
+           (or (instance? com.vividsolutions.jts.geom.Geometry (first v))
+               (string? (first v))))
+    (conv-param v) v ))
 
 ;convert a jts geometry, so we can do an insert/update
 ;(defmulti jts-to-pg class :default :no-op)

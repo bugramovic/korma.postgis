@@ -61,8 +61,8 @@
         poly  (from-wkt "POLYGON((5.5 5.5, 5.5 8.8, 8.8 8.8, 8.8 5.5, 5.5 5.5))")]
     (insert korma_postgis_point
       (values {:geom [point 4326] :name "jts-point"}))
-    ;(insert korma_postgis_point
-    ;  (values {:geom ["POINT(8.7 8.7)" 4326] :name "wkt-point"}))
+    (insert korma_postgis_point
+      (values {:geom ["POINT(8.7 8.7)" 4326] :name "wkt-point"}))
     (insert korma_postgis_poly
       (values {:geom [poly 4326] :name "jts-polygon"}))
   ))
@@ -72,12 +72,11 @@
     (create-test-tables)
     (fill-test-tables)
     (f)
-    (catch Exception e (println e))
-    (finally
-      (drop-test-tables) )))
+  (catch Exception e (println e))
+  (finally (drop-test-tables))))
 
 (deftest insert-ok
-  (is (= 1 (count (select korma_postgis_point))))
+  (is (= 2 (count (select korma_postgis_point))))
   (is (= 1 (count (select korma_postgis_poly))))
 )
 
@@ -88,10 +87,11 @@
                    (where (st-intersects (st-buffer [ (from-wkt "POINT(7.0 7.0)") 4326] 0.1) :geom) )))))
 )
 
-(deftest join-inside
-  (is (= 1 (count (select korma_postgis_point
-                   (from :korma_postgis_poly)
-                   (where (st-within :geom :korma_postgis_poly.geom) )) )) )
+(deftest join-spatial
+  (is (= 2 (count (select korma_postgis_point
+                     (from :korma_postgis_poly)
+                     (where (and (st-within :geom :korma_postgis_poly.geom)
+                                 (> :id 0)))))))
   )
 
 (use-fixtures :once test-fixture)
