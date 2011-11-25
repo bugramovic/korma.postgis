@@ -90,16 +90,16 @@
 
 (deftest join-inside
   (is (= 1 (count (select korma_postgis_point
-                   (spatial-join :korma_postgis_poly)
+                   (from :korma_postgis_poly)
                    (where (st-within :geom :korma_postgis_poly.geom) )) )) )
   )
 
 (use-fixtures :once test-fixture)
 
 (run-tests)
-;
-;(sql-only
-; (select korma_postgis_point
-;   (spatial :korma_postgis_poly)
-;   (where (st-within :geom :korma_postgis_poly.geom) ))
-;)
+
+(sql-only
+  (select korma_postgis_point
+     (from :korma_postgis_poly)
+     (where (st-within :geom :korma_postgis_poly.geom) ))
+)
