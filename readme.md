@@ -17,7 +17,7 @@ not everything has been tested and most of the code was generated.
     ;... define postgres-db ... please note, that the postgres jdbc driver is not a korma.postgis dependency
     ;                           the postgis extension however is included
 
-    (register-types db) ;register the postgis-types in the db-pool ... only needed for the prepare-postgis function
+    (register-types db) ;register the postgis-types in the db-pool ... only needed for the transform-postgis function
 
     (defentity geom-ent
         (prepare   prepare-postgis) ;this allows you to use jts-geometries in your insert/update statements
