@@ -1,5 +1,5 @@
 # Introduction #
-this project augments the tasty korma sql library for clojure with some convenience for working with postgis databases.  
+this project augments the tasty [korma](https://github.com/ibdknox/korma) sql library for [clojure](http://clojure.org/) with some convenience for working with [postgis](http://postgis.refractions.net/) databases.
 This includes conversions from and to JavaTopologySuite geometries to keep you sane
 and "aliases" for the postgis functions, so you can type less and your editor might even
 provide auto-complete.  
