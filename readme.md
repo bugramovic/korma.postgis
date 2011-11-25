@@ -14,7 +14,8 @@ not everything has been tested and most of the code was generated.
 ```clojure
     ;....
     (use 'korma.postgis)
-    ;... define postgres-db ...
+    ;... define postgres-db ... please note, that the postgres jdbc driver is not a korma.postgis dependency
+    ;                           the postgis extension however is included
 
     (register-types db) ;register the postgis-types in the db-pool ... only needed for the prepare-postgis function
 
@@ -35,11 +36,6 @@ not everything has been tested and most of the code was generated.
 
 
     ;generated sql examples
-    (sql-only
-      (select geom-ent
-        (where (st-intersects :geom (st-buffer [point 4326] 10 ))))
-    )
-    ;generates: SELECT "geom-ent".* FROM "geom-ent" WHERE ST_INTERSECTS("geom-ent"."geom", ST_BUFFER(ST_GEOMFROMTEXT(?,?), ?))
 
     (sql-only
         (select geom-ent
@@ -47,13 +43,21 @@ not everything has been tested and most of the code was generated.
           (where (st-intersects (st-buffer ["POINT(6.6 7.7)" 4326] 10 ) :geom )))
     )
     ;generates: SELECT "geom-ent"."id", ST_X("geom-ent"."geom") FROM "geom-ent" WHERE ST_INTERSECTS(ST_BUFFER(ST_GEOMFROMTEXT(?, ?), ?), "geom-ent"."geom")
+
+    ;for a 'spatial join' you have to add the extra table using (from :table)
+    (sql-only
+         (select korma_postgis_point
+                   (from :korma_postgis_poly)
+                   (where (st-within :geom :korma_postgis_poly.geom) ))
+    )
+    ;generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
+
 ```
 
 # Todos #
-* spatial joins currently don't work with the korma master branch
 * currently the input geometries are converted to WKT which is obviously a stupid idea from an performance viewpoint .. so change to WKB
 * test all those generated sql-function macros/aliases
-* attach srid metadata to an entity, so there is no need to provide it every time ? (not sure about this .. having the spatial refrence explicit prevents errors)
+* maybe attach srid metadata to an entity, so there is no need to provide it every time ? (not sure about this .. having the spatial refrence explicit prevents errors)
 
 # Features #
 * allow input of JTS geometries or WKT strings
