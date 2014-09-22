@@ -115,6 +115,10 @@
 ; half automaticly created by test/korma/reference_scraper.clj
 ; ***********
 
+(defmacro geometry
+  [arg0]
+  `(sqlfn Geometry (conv-param ~arg0)))
+
 ; *******************
 ; Geometry accessors
 ; ******************
@@ -705,8 +709,10 @@
  (defmacro st-union
    "- Returns a geometry that represents the point set union of	the Geometries.
   full doc: http://postgis.refractions.net/documentation/manual-1.5/ST_Union.html"
-  [arg0 arg1]
-  `(sqlfn ST_Union (conv-param ~arg0) (conv-param ~arg1)))
+  ([arg0]
+  `(sqlfn ST_Union (conv-param ~arg0)))
+  ([arg0 arg1]
+  `(sqlfn ST_Union (conv-param ~arg0) (conv-param ~arg1))))
 
 ;*****
 ; MISC
