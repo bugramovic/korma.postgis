@@ -115,6 +115,10 @@
 ; half automaticly created by test/korma/reference_scraper.clj
 ; ***********
 
+(defmacro geometry
+  [arg0]
+  `(sqlfn Geometry (conv-param ~arg0)))
+
 ; *******************
 ; Geometry accessors
 ; ******************
