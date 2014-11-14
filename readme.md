@@ -77,8 +77,8 @@ There is currently one multimethod that can be used to customize korma.postgis t
 converts the input-parameter into WKT to interface with the database (this WILL change to `to-wkb`)
 useful if you don't use JTS as your geometry library (although you should)
 
-## I don't use PostGIS; Oracle|MSSQL|ArcSDE, etc. ##
-Transforming korma.postgis into korma.spatial to handle all the different spatial SQL databases (MS SQL Server, Oracle spatial/locator, ArcSDE/st_geometry) is currently not a short-term goal.
+### I don't use PostGIS; Oracle, MS SQL, ArcSDE, etc. ###
+Transforming korma.postgis into korma.spatial to handle all the different spatial SQL databases (MS SQL Server, Oracle `spatial/locator`, ArcSDE `ST_Geometry`) is currently not a short-term goal.
 Generated queries need to be a bit different depending on the database. Esri's `ST_GEOMETRY` in Oracle, for example, returns `0` or `1` instead of a proper boolean,
 so we would have to generate
     [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1
