@@ -20,26 +20,29 @@ Not everything has been tested and most of the code was auto-generated.
 ```
 Please note that the Postgres JDBC driver is not a korma.postgis dependency. The PostGIS extension however is included.
 
+Register the postgis-types in the db-pool... 
+This is only needed for the transform-postgis function.
+
 ```clojure
 
-; register the postgis-types in the db-pool... only needed for the transform-postgis function
 (register-types db) 
 
+; this allows you to use JTS geometries in your insert/update statements
 (defentity geom-ent
-  ; this allows you to use JTS geometries in your insert/update statements
-  (prepare   prepare-postgis) 
+  (prepare prepare-postgis) 
   
   ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
-  (transform tranform-postgis) 
+  (transform tranform-postgis)
+)
 
-    )
 ; define some JTS point
-(def point (new Point 7.7 8.8)) 
+(def point (new Point 7.7 8.8))
 
 ; simple example
 (select geom-ent
   (where (st-within :geom (st-buffer [point 4326] 100))
-  (limit 100) )
+  (limit 100)
+)
 
 ```
 
