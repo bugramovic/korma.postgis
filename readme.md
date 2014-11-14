@@ -1,4 +1,4 @@
-# Introduction #
+## Introduction ##
 This project augments the tasty [korma](https://github.com/korma/Korma) SQL library for [clojure](http://clojure.org/) with some conveniences for working with [postgis](http://postgis.refractions.net/) databases.
 This includes conversions from and to [Java Topology Suite](http://www.vividsolutions.com/jts/JTSHome.htm) geometries to keep you sane
 and "aliases" for the postgis functions, so you can type less and your editor might even
@@ -11,7 +11,7 @@ Other versions might work, but they also might blow up in your face
 and even if you use PostGIS 1.5: you might want to keep your distance.
 Not everything has been tested and most of the code was auto-generated.
 
-# Example/excuse for an tutorial #
+## Example/excuse for an tutorial ##
 ```clojure
     ;....
     (use 'korma.core)
@@ -57,19 +57,19 @@ Not everything has been tested and most of the code was auto-generated.
 
 ```
 
-# Todos #
+## Todos ##
 * Currently the input geometries are converted to WKT which is obviously a stupid idea from a performance viewpoint... so change to WKB instead.
 * Test all those generated sql-function macros/aliases
 * Maybe attach SRID metadata to an entity, so there is no need to provide it every time? (Not sure about this... Having the spatial refrence explicit prevents errors.)
 
-# Features #
+## Features ##
 * Allow input of JTS geometries or WKT strings
 * Convert `PGgeometry` to JTS
 * Generated macros for most of the PostGIS `ST_` functions
 * Macros include basic documentation, so you can use e.g. `(doc st-buffer)` to look at PostGIS documentation - which was scraped from the PostGIS function reference page.
 
 
-# Extension points #
+## Extension points ##
 There is currently one multimethod that can be used to customize korma.postgis to your needs:
 ```clojure
 (defmulti to-wkt class)
@@ -77,7 +77,7 @@ There is currently one multimethod that can be used to customize korma.postgis t
 converts the input-parameter into WKT to interface with the database (this WILL change to `to-wkb`)
 useful if you don't use JTS as your geometry library (although you should)
 
-# I don't use PostGIS; Oracle|MSSQL|ArcSDE, etc.#
+## I don't use PostGIS; Oracle|MSSQL|ArcSDE, etc. ##
 Transforming korma.postgis into korma.spatial to handle all the different spatial SQL databases (MS SQL Server, Oracle spatial/locator, ArcSDE/st_geometry) is currently not a short-term goal.
 Generated queries need to be a bit different depending on the database. Esri's `ST_GEOMETRY` in Oracle, for example, returns `0` or `1` instead of a proper boolean,
 so we would have to generate
