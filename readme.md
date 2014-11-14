@@ -46,16 +46,16 @@ Please note that the Postgres JDBC driver is not a korma.postgis dependency. The
 The spatial functions take either a keyword `(-> column)` or a seq with `[geometry, srid]` for the geometry parameter. Geometry can either be a JTS geometry or a WKT string.
 
 
-### Generated SQL examples ###
+#### Generated SQL examples ####
 ```clojure
 
 (sql-only
   (select geom-ent
   (fields :id (st-x :geom) )
   (where (st-intersects (st-buffer ["POINT(6.6 7.7)" 4326] 10 ) :geom )))
-    )
+)
 ```
-Generates the following:
+###### Generates the following SQL: ######
 ```sql
 
 SELECT "geom-ent"."id", ST_X("geom-ent"."geom") 
@@ -75,7 +75,7 @@ For a 'spatial join' you have to add the extra table using `(from :table)`
 )
 ```
 
-Generates the following:
+###### Generates the following SQL: ######
 
 ```sql
 
@@ -98,7 +98,9 @@ WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
 
 ## Extension points ##
 There is currently one multimethod that can be used to customize korma.postgis to your needs:
+
 ```clojure
+
 (defmulti to-wkt class)
 ```
 converts the input-parameter into WKT to interface with the database (this WILL change to `to-wkb`)
