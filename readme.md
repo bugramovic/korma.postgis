@@ -14,17 +14,19 @@ Not everything has been tested and most of the code was auto-generated.
 ## Example / rough tutorial ##
 ```clojure
 
-; ....
 (use 'korma.core)
 (use 'korma.postgis)
-; ... define postgres-db ... please note, that the Postgres JDBC driver is not a korma.postgis dependency
-;                           the PostGIS extension however is included
+; ... define postgres-db here... 
+```
+Please note that the Postgres JDBC driver is not a korma.postgis dependency. The PostGIS extension however is included.
+
+```clojure
 
 (register-types db) ; register the postgis-types in the db-pool... only needed for the transform-postgis function
 
 (defentity geom-ent
-        (prepare   prepare-postgis) ; this allows you to use jts-geometries in your insert/update statements
-        (transform tranform-postgis) ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
+  (prepare   prepare-postgis) ; this allows you to use jts-geometries in your insert/update statements
+  (transform tranform-postgis) ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
     )
 
 (def point (new Point 7.7 8.8)) ; define some JTS point
@@ -34,12 +36,13 @@ Not everything has been tested and most of the code was auto-generated.
   (where (st-within :geom (st-buffer [point 4326] 100))
   (limit 100) )
 
-; the spatial-functions take either a keyword (-> column) or a seq with [geometry, srid] for the geometry parameter
-; geometry can either be a JTS geometry or a WKT string
+```
+
+The spatial functions take either a keyword `(-> column)` or a seq with `[geometry, srid]` for the geometry parameter. Geometry can either be a JTS geometry or a WKT string.
 
 
-; generated sql examples
-
+### Generated SQL examples ###
+```clojure
 (sql-only
   (select geom-ent
   (fields :id (st-x :geom) )
