@@ -13,48 +13,49 @@ Not everything has been tested and most of the code was auto-generated.
 
 ## Example / rough tutorial ##
 ```clojure
-    ; ....
-    (use 'korma.core)
-    (use 'korma.postgis)
-    ; ... define postgres-db ... please note, that the Postgres JDBC driver is not a korma.postgis dependency
-    ;                           the postgis extension however is included
 
-    (register-types db) ; register the postgis-types in the db-pool... only needed for the transform-postgis function
+; ....
+(use 'korma.core)
+(use 'korma.postgis)
+; ... define postgres-db ... please note, that the Postgres JDBC driver is not a korma.postgis dependency
+;                           the PostGIS extension however is included
 
-    (defentity geom-ent
+(register-types db) ; register the postgis-types in the db-pool... only needed for the transform-postgis function
+
+(defentity geom-ent
         (prepare   prepare-postgis) ; this allows you to use jts-geometries in your insert/update statements
         (transform tranform-postgis) ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
     )
 
-    (def point (new Point 7.7 8.8)) ; define some JTS point
+(def point (new Point 7.7 8.8)) ; define some JTS point
 
-    ; simple example
-    (select geom-ent
-        (where (st-within :geom (st-buffer [point 4326] 100))
-        (limit 100) )
+; simple example
+(select geom-ent
+  (where (st-within :geom (st-buffer [point 4326] 100))
+  (limit 100) )
 
-    ; the spatial-functions take either a keyword (-> column) or a seq with [geometry, srid] for the geometry parameter
-    ; geometry can either be a JTS geometry or a WKT string
+; the spatial-functions take either a keyword (-> column) or a seq with [geometry, srid] for the geometry parameter
+; geometry can either be a JTS geometry or a WKT string
 
 
-    ; generated sql examples
+; generated sql examples
 
-    (sql-only
-        (select geom-ent
-          (fields :id (st-x :geom) )
-          (where (st-intersects (st-buffer ["POINT(6.6 7.7)" 4326] 10 ) :geom )))
+(sql-only
+  (select geom-ent
+  (fields :id (st-x :geom) )
+  (where (st-intersects (st-buffer ["POINT(6.6 7.7)" 4326] 10 ) :geom )))
     )
-    ; generates: SELECT "geom-ent"."id", ST_X("geom-ent"."geom") FROM "geom-ent" WHERE ST_INTERSECTS(ST_BUFFER(ST_GEOMFROMTEXT(?, ?), ?), "geom-ent"."geom")
+; generates: SELECT "geom-ent"."id", ST_X("geom-ent"."geom") FROM "geom-ent" WHERE ST_INTERSECTS(ST_BUFFER(ST_GEOMFROMTEXT(?, ?), ?), "geom-ent"."geom")
 
-    ; for a 'spatial join' you have to add the extra table using (from :table)
-    (sql-only
-    (select korma_postgis_point
-                   (from :korma_postgis_poly)
-                   (where (and (st-within :geom :korma_postgis_poly.geom)
-                               (> :id 0))))
-    )
-    ; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
-    ```
+; for a 'spatial join' you have to add the extra table using (from :table)
+(sql-only
+  (select korma_postgis_point
+  (from :korma_postgis_poly)
+  (where (and (st-within :geom :korma_postgis_poly.geom)
+  (> :id 0))))
+)
+; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
+```
 
 ## TODO ##
 * Currently the input geometries are converted to WKT which is obviously a stupid idea from a performance standpoint... so change to WKB instead.
