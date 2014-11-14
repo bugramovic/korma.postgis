@@ -26,7 +26,7 @@ This is only needed for the `transform-postgis` function (see below).
 ```clojure
 
 (register-types db)
-``
+```
 
 Defining the entities allows you to use JTS geometries in your insert/update statements:
 
