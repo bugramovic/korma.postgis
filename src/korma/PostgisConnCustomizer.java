@@ -6,7 +6,7 @@ import java.sql.Connection;
 
 
 /**
- * registers PGGeometry and PGBox3d with the postgres connection
+ * registers PGGeometry and PGBox3d with the PostgreSQL connection
  */
 public class PostgisConnCustomizer implements ConnectionCustomizer {
 

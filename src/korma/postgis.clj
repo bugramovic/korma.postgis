@@ -18,7 +18,7 @@
 (defmulti to-wkt class
    :default :jts)
 
-;make sure that intermediate query-structures are simply returned
+; make sure that intermediate query-structures are simply returned
 (defmethod to-wkt clojure.lang.MapEntry [m] m)
 
 (defmethod to-wkt :jts [geom]
@@ -57,7 +57,7 @@
     ))
 
 
-;convert the postgis jdbc type to jts
+; convert the PostGIS JDBC type to JTS
 (defmulti pg-to-jts class :default :no-op)
 (defmethod pg-to-jts :no-op [x] x)
 (defmethod pg-to-jts org.postgis.PGgeometry [pg-geom]
