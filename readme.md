@@ -1,14 +1,14 @@
 # Introduction #
-this project augments the tasty [korma](https://github.com/ibdknox/korma) sql library for [clojure](http://clojure.org/) with some convenience for working with [postgis](http://postgis.refractions.net/) databases.
-This includes conversions from and to JavaTopologySuite geometries to keep you sane
+This project augments the tasty [korma](https://github.com/korma/Korma) SQL library for [clojure](http://clojure.org/) with some conveniences for working with [postgis](http://postgis.refractions.net/) databases.
+This includes conversions from and to [Java Topology Suite](http://www.vividsolutions.com/jts/JTSHome.htm) geometries to keep you sane
 and "aliases" for the postgis functions, so you can type less and your editor might even
-provide auto-complete.  
+provide auto-complete.
 
 # Warning #
 korma.postgis is in no way production ready
-and has currently only been run with postgres 9.0/postgis 1.5.
-other versions might work, but they also might blow up in your face and even if you use postgis 1.5: you might want to keep your distance.  
-not everything has been tested and most of the code was generated.  
+and has currently only been run with PostgreSQL 9.0/PostGIS 1.5.
+other versions might work, but they also might blow up in your face and even if you use PostGIS 1.5: you might want to keep your distance.
+Not everything has been tested and most of the code was generated.
 
 # Example/excuse for an tutorial #
 ```clojure
@@ -57,36 +57,35 @@ not everything has been tested and most of the code was generated.
 ```
 
 # Todos #
-* currently the input geometries are converted to WKT which is obviously a stupid idea from an performance viewpoint .. so change to WKB
-* test all those generated sql-function macros/aliases
-* maybe attach srid metadata to an entity, so there is no need to provide it every time ? (not sure about this .. having the spatial refrence explicit prevents errors)
+* Currently the input geometries are converted to WKT which is obviously a stupid idea from an performance viewpoint .. so change to WKB
+* Test all those generated sql-function macros/aliases
+* Maybe attach SRID metadata to an entity, so there is no need to provide it every time? (Not sure about this... Having the spatial refrence explicit prevents errors.)
 
 # Features #
-* allow input of JTS geometries or WKT strings
-* convert PGgeometry to JTS
-* generated macros for most of postgis' "ST_" functions
-* macros include basic documentation, so you can use e.g. (doc st-buffer) to look at postgis documentation - which was scraped from postgis' function reference page
+* Allow input of JTS geometries or WKT strings
+* Convert PGgeometry to JTS
+* Generated macros for most of the PostGIS `ST_` functions
+* Macros include basic documentation, so you can use e.g. `(doc st-buffer)` to look at PostGIS documentation - which was scraped from the PostGIS function reference page.
 
 
 # Extension points #
-there is currently one multimethod that can be used to customize korma.postgis to your needs:
+There is currently one multimethod that can be used to customize korma.postgis to your needs:
 ```clojure
 (defmulti to-wkt class)
 ```
-converts the input-parameter into WKT to interface with the database (this WILL change to to-wkb)
-usefull if you don't use JTS as your geometry library (although you should)
+converts the input-parameter into WKT to interface with the database (this WILL change to `to-wkb`)
+useful if you don't use JTS as your geometry library (although you should)
 
-# I don't use postgis, i use oracle|mssql|arcsde ! #
-transforming korma.postgis into korma.spatial that handles the different spatial sql databases (ms sql server, oracle spatial/locator, arcsde/st_geometry).  
-is currently no short term goal.  
-generated queries need to be a bit different depending on the database.   Esri's ST_GEOMETRY in oracle for example returns 0|1 instead of a boolean,
+# I don't use PostGIS; I use Oracle|MS SQL|ArcSDE, etc. #
+Transforming korma.postgis into korma.spatial to handle all the different spatial SQL databases (MS SQL Server, Oracle spatial/locator, ArcSDE/st_geometry) is currently not a short-term goal.
+Generated queries need to be a bit different depending on the database. Esri's `ST_GEOMETRY` in Oracle, for example, returns `0` or `1` instead of a proper boolean,
 so we would have to generate
     [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1
     instead of
     [...] WHERE ST_INTERSECTS(table1.shape, table2.shape)
 
 
-this might happen, after the api is finalized
+This might happen, after the API is finalized.
 
 
 ## License ##
