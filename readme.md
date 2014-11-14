@@ -53,7 +53,8 @@ Not everything has been tested and most of the code was auto-generated.
                    (where (and (st-within :geom :korma_postgis_poly.geom)
                                (> :id 0))))
     )
-    ; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")```
+    ; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
+    ```
 
 ## TODO ##
 * Currently the input geometries are converted to WKT which is obviously a stupid idea from a performance standpoint... so change to WKB instead.
