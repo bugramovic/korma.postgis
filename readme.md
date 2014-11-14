@@ -1,5 +1,5 @@
 ## Introduction ##
-This project augments the tasty [korma](https://github.com/korma/Korma) SQL library for [clojure](http://clojure.org/) with some conveniences for working with [PostGIS](http://postgis.refractions.net/) databases.
+This project augments the tasty [korma](https://github.com/korma/Korma) SQL library for [Clojure](http://clojure.org/) with some conveniences for working with [PostGIS](http://postgis.refractions.net/) databases.
 This includes conversions from and to [Java Topology Suite](http://www.vividsolutions.com/jts/JTSHome.htm) geometries to keep you sane
 and "aliases" for the PostGIS functions, so you can type less and your editor might even
 provide auto-complete.
@@ -16,7 +16,7 @@ Not everything has been tested and most of the code was auto-generated.
     ; ....
     (use 'korma.core)
     (use 'korma.postgis)
-    ; ... define postgres-db ... please note, that the postgres jdbc driver is not a korma.postgis dependency
+    ; ... define postgres-db ... please note, that the Postgres JDBC driver is not a korma.postgis dependency
     ;                           the postgis extension however is included
 
     (register-types db) ; register the postgis-types in the db-pool... only needed for the transform-postgis function
@@ -48,14 +48,12 @@ Not everything has been tested and most of the code was auto-generated.
 
     ; for a 'spatial join' you have to add the extra table using (from :table)
     (sql-only
-(select korma_postgis_point
+    (select korma_postgis_point
                    (from :korma_postgis_poly)
                    (where (and (st-within :geom :korma_postgis_poly.geom)
                                (> :id 0))))
-)
-    ; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
-
-```
+    )
+    ; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")```
 
 ## TODO ##
 * Currently the input geometries are converted to WKT which is obviously a stupid idea from a performance standpoint... so change to WKB instead.
@@ -81,9 +79,9 @@ useful if you don't use JTS as your geometry library (although you should)
 Transforming korma.postgis into korma.spatial to handle all the different spatial SQL databases (MS SQL Server, Oracle `spatial/locator`, ArcSDE `ST_Geometry`) is currently not a short-term goal.
 Generated queries need to be a bit different depending on the database. Esri's `ST_GEOMETRY` in Oracle, for example, returns `0` or `1` instead of a proper boolean,
 so we would have to generate
-    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1
+    `[...] WHERE ST_INTERSECTS(table1.shape, table2.shape) = 1`
     instead of
-    [...] WHERE ST_INTERSECTS(table1.shape, table2.shape)
+    `[...] WHERE ST_INTERSECTS(table1.shape, table2.shape)`
 
 
 This might happen, after the API is finalized.
