@@ -22,14 +22,19 @@ Please note that the Postgres JDBC driver is not a korma.postgis dependency. The
 
 ```clojure
 
-(register-types db) ; register the postgis-types in the db-pool... only needed for the transform-postgis function
+; register the postgis-types in the db-pool... only needed for the transform-postgis function
+(register-types db) 
 
 (defentity geom-ent
-  (prepare   prepare-postgis) ; this allows you to use jts-geometries in your insert/update statements
-  (transform tranform-postgis) ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
-    )
+  ; this allows you to use JTS geometries in your insert/update statements
+  (prepare   prepare-postgis) 
+  
+  ; this converts PGGeometry to JTS-Geometries -> "SELECT geom FROM geom_table" gets you JTS-Geometries), if you called register-types
+  (transform tranform-postgis) 
 
-(def point (new Point 7.7 8.8)) ; define some JTS point
+    )
+; define some JTS point
+(def point (new Point 7.7 8.8)) 
 
 ; simple example
 (select geom-ent
@@ -43,21 +48,40 @@ The spatial functions take either a keyword `(-> column)` or a seq with `[geomet
 
 ### Generated SQL examples ###
 ```clojure
+
 (sql-only
   (select geom-ent
   (fields :id (st-x :geom) )
   (where (st-intersects (st-buffer ["POINT(6.6 7.7)" 4326] 10 ) :geom )))
     )
-; generates: SELECT "geom-ent"."id", ST_X("geom-ent"."geom") FROM "geom-ent" WHERE ST_INTERSECTS(ST_BUFFER(ST_GEOMFROMTEXT(?, ?), ?), "geom-ent"."geom")
+```
+Generates the following:
+```sql
 
-; for a 'spatial join' you have to add the extra table using (from :table)
+SELECT "geom-ent"."id", ST_X("geom-ent"."geom") 
+FROM "geom-ent" 
+WHERE ST_INTERSECTS(ST_BUFFER(ST_GEOMFROMTEXT(?, ?), ?), "geom-ent"."geom")
+```
+
+For a 'spatial join' you have to add the extra table using `(from :table)`
+
+```clojure
+
 (sql-only
   (select korma_postgis_point
   (from :korma_postgis_poly)
   (where (and (st-within :geom :korma_postgis_poly.geom)
   (> :id 0))))
 )
-; generates: SELECT "korma_postgis_point".* FROM "korma_postgis_point", "korma_postgis_poly" WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
+```
+
+Generates the following:
+
+```sql
+
+SELECT "korma_postgis_point".* 
+FROM "korma_postgis_point", "korma_postgis_poly" 
+WHERE ST_WITHIN("korma_postgis_point"."geom", "korma_postgis_poly"."geom")
 ```
 
 ## TODO ##
